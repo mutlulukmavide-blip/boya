@@ -1,0 +1,16 @@
+BoyaScan v1.0 - Android kurulum
+
+ÖNEMLİ:
+- Bu bir deneysel web uygulamasıdır; boya kalınlığını mikron cinsinden ölçmez.
+- Android Chrome'da Magnetometer API desteği cihaz/tarayıcıya göre değişir.
+- Sensör erişimi güvenli bağlam (HTTPS veya localhost) gerektirir. ZIP içindeki index.html dosyasını doğrudan dosya yöneticisinden açmak sensöre erişim sağlamayabilir.
+
+Kurulum:
+1. ZIP içeriğini bir HTTPS web alanına yükleyin (ör. kendi hosting alanınız veya GitHub Pages).
+2. Android telefonda sayfanın HTTPS adresini Chrome ile açın.
+3. Chrome menüsünden "Ana ekrana ekle" veya "Uygulamayı yükle" seçeneğini kullanın.
+4. Uygulamayı açıp "Sensörü başlat" düğmesine dokunun.
+5. Aynı telefon yönü ve mesafeyi koruyarak referans alın, sonra diğer bölgeleri karşılaştırın.
+
+Destek yoksa:
+Chrome "Magnetometer API desteklemiyor" uyarısı verebilir. Bu durumda telefonun donanımında sensör olsa bile tarayıcı erişimi sunmuyor olabilir. Bu prototipte sahte ölçüm üretilmez.

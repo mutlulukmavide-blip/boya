@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1220">
+<meta name="description" content="Telefonun manyetometresiyle kaporta üzerindeki manyetik alan değişimlerini gözlemleyen deneysel araç.">
+<link rel="manifest" href="manifest.webmanifest">
+<title>BoyaScan</title>
+<style>
+:root{color-scheme:dark;--bg:#080e1a;--panel:#111c2e;--panel2:#16243a;--line:#263954;--txt:#edf4ff;--muted:#9db0ca;--cyan:#38d5e8;--green:#51dfa0;--orange:#ffbd59;--red:#ff6e78}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(900px 500px at 80% -10%,#18395b 0%,transparent 60%),var(--bg);color:var(--txt);font:15px system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+main{max-width:760px;margin:auto;padding:22px 16px 42px}.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}.brand{display:flex;gap:11px;align-items:center}.logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#35d6e8,#3778ff);display:grid;place-items:center;color:#061323;font-size:23px;font-weight:900}.brand b{font-size:20px;letter-spacing:.3px}.brand small{display:block;color:var(--muted);font-size:11px;letter-spacing:1.5px;text-transform:uppercase}.pill{font-size:11px;color:var(--orange);border:1px solid #775a2e;padding:6px 9px;border-radius:99px}
+h1{font-size:26px;line-height:1.15;margin:10px 0 8px}p{color:var(--muted);line-height:1.55;margin:7px 0}.panel{background:linear-gradient(145deg,rgba(22,36,58,.96),rgba(14,24,40,.96));border:1px solid var(--line);border-radius:20px;padding:17px;margin-top:14px;box-shadow:0 12px 35px #0002}.label{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:1.2px}.reading{font-size:42px;font-weight:750;letter-spacing:-1.5px;margin:6px 0}.unit{font-size:15px;color:var(--muted);font-weight:500}.delta{font-size:13px;color:var(--cyan)}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}.axis{background:#0b1525;border:1px solid #20344e;border-radius:13px;padding:12px}.axis b{display:block;font-size:19px;margin-top:5px}.axis span{font-size:11px;color:var(--muted)}button{border:0;border-radius:13px;padding:13px 16px;font-weight:700;font-size:14px;cursor:pointer;color:#061323;background:linear-gradient(135deg,#48e0e8,#5c9cff)}button.secondary{background:#1d304b;color:var(--txt);border:1px solid #355071}button:disabled{opacity:.4;cursor:not-allowed}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:13px}.status{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}.dot{width:8px;height:8px;border-radius:50%;background:#74859b}.dot.on{background:var(--green);box-shadow:0 0 12px #51dfa0}.bar{height:8px;background:#0a1423;border-radius:9px;overflow:hidden;margin-top:12px}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#38d5e8,#51dfa0);transition:width .2s}.chart{width:100%;height:150px;display:block;margin-top:10px}.history{display:grid;gap:8px;margin-top:12px}.sample{display:flex;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:11px;background:#0b1525;font-size:13px}.sample small{color:var(--muted)}.notice{font-size:12px;background:#2a2114;border:1px solid #6c512b;color:#f4d6a1;padding:12px;border-radius:13px;line-height:1.5}.good{background:#10271f;border-color:#285a45;color:#b6f4d5}.footer{font-size:11px;text-align:center;color:#7488a5;margin-top:22px}
+@media(max-width:420px){.reading{font-size:36px}.panel{padding:14px}main{padding:18px 12px 32px}}
+</style>
+</head>
+<body><main>
+<header class="top"><div class="brand"><div class="logo">B</div><div><b>BoyaScan</b><small>Magnetic field lab</small></div></div><span class="pill">DENEYSEL v1.0</span></header>
+<h1>Kaporta manyetik alan taraması</h1>
+<p>Telefonun manyetometresinden gelen canlı verileri izleyin ve referans noktasıyla karşılaştırın.</p>
+<section class="panel">
+ <div class="status"><i id="dot" class="dot"></i><span id="status">Sensör başlatılmadı</span></div>
+ <div class="label" style="margin-top:18px">Toplam manyetik alan</div>
+ <div class="reading"><span id="total">—</span> <span class="unit">µT</span></div>
+ <div class="delta" id="delta">Referans alınmadı</div>
+ <div class="grid">
+  <div class="axis"><span>X ekseni</span><b id="x">—</b><span>µT</span></div>
+  <div class="axis"><span>Y ekseni</span><b id="y">—</b><span>µT</span></div>
+  <div class="axis"><span>Z ekseni</span><b id="z">—</b><span>µT</span></div>
+ </div>
+ <div class="actions"><button id="start">Sensörü başlat</button><button class="secondary" id="cal" disabled>Referans al</button></div>
+ <div class="bar"><i id="bar"></i></div>
+ <p style="font-size:11px">Çubuk, referansa göre değişimin görsel göstergesidir; boya kalınlığı değildir.</p>
+</section>
+<section class="panel">
+ <div style="display:flex;justify-content:space-between;align-items:center"><b>Canlı değişim grafiği</b><span class="label">Δ µT</span></div>
+ <canvas id="chart" class="chart"></canvas>
+ <div class="actions"><button class="secondary" id="mark" disabled>Noktayı kaydet</button><button class="secondary" id="clear">Verileri temizle</button></div>
+ <div id="history" class="history"><p>Henüz kayıt yok.</p></div>
+</section>
+<section class="panel">
+ <b>Ölçüm notları</b>
+ <p class="notice">Bu uygulama yalnızca telefonun manyetik alan sensörünü okur. Sensör, boya kalınlığını doğrudan ölçmez. Telefonun yönü, kaportaya uzaklığı, metal türü, mıknatıslar ve çevredeki elektronik parçalar sonucu etkiler. Sonuçları µm cinsinden boya kalınlığı olarak yorumlamayın.</p>
+ <p class="notice good" style="margin-top:10px">Daha tutarlı deney için telefonu aynı yönde ve aynı mesafede tutun; kılıfı çıkarın, hoparlör/mıknatıs içeren aksesuarlardan uzak durun. Çelik ve alüminyum paneller farklı davranır.</p>
+</section>
+<div class="footer">BoyaScan • Telefon sensörüyle deneysel manyetik alan gözlemi</div>
+</main>
+<script>
+let sensor=null, latest=null, baseline=null, samples=[], marks=[];
+const $=id=>document.getElementById(id);
+const fmt=n=>Number.isFinite(n)?n.toFixed(2):"—";
+function setStatus(t,on=false){$("status").textContent=t;$("dot").className="dot"+(on?" on":"")}
+function draw(){
+ const c=$("chart"), dpr=window.devicePixelRatio||1, w=c.clientWidth||320,h=150;
+ c.width=w*dpr;c.height=h*dpr;const ctx=c.getContext("2d");ctx.scale(dpr,dpr);
+ ctx.clearRect(0,0,w,h);ctx.strokeStyle="#263954";ctx.lineWidth=1;
+ for(let i=0;i<4;i++){let y=10+i*(h-20)/3;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
+ if(samples.length<2)return;
+ let max=Math.max(1,...samples.map(Math.abs)), mid=h/2;
+ ctx.strokeStyle="#38d5e8";ctx.lineWidth=2;ctx.beginPath();
+ samples.forEach((v,i)=>{let x=i/(Math.max(1,samples.length-1))*w,y=mid-(v/max)*(h*.42);i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke();
+}
+function update(){
+ if(!latest)return;
+ let [x,y,z]=latest, total=Math.hypot(x,y,z);
+ $("x").textContent=fmt(x);$("y").textContent=fmt(y);$("z").textContent=fmt(z);$("total").textContent=fmt(total);
+ if(baseline!==null){
+  let d=total-baseline;$("delta").textContent=(d>=0?"+":"")+fmt(d)+" µT referansa göre";
+  $("bar").style.width=Math.min(100,Math.abs(d)*4)+"%";
+  samples.push(d);if(samples.length>100)samples.shift();draw();
+ }
+ $("cal").disabled=false;$("mark").disabled=false;
+}
+$("start").onclick=async()=>{
+ if(!("Magnetometer" in window)){setStatus("Bu tarayıcı Magnetometer API desteklemiyor.");alert("Bu tarayıcıda doğrudan manyetometre erişimi bulunamadı. Android telefonda güncel Chrome ile HTTPS üzerinden tekrar deneyin. Her telefon/tarayıcı desteklemeyebilir.");return}
+ try{
+  sensor=new Magnetometer({frequency:10});
+  sensor.addEventListener("reading",()=>{latest=[sensor.x,sensor.y,sensor.z];update()});
+  sensor.addEventListener("error",e=>setStatus("Sensör hatası: "+(e.error?.name||"erişim reddedildi")));
+  sensor.start();setStatus("Manyetometre çalışıyor",true);$("start").disabled=true;
+ }catch(e){setStatus("Başlatılamadı: "+e.message);alert("Sensör başlatılamadı. Sayfanın HTTPS üzerinden açıldığını ve tarayıcı izinlerini kontrol edin.")}
+};
+$("cal").onclick=()=>{if(!latest)return;baseline=Math.hypot(...latest);samples=[];draw();$("delta").textContent="Referans: "+fmt(baseline)+" µT";$("bar").style.width="0%";};
+$("mark").onclick=()=>{if(!latest)return;let t=Math.hypot(...latest),d=baseline===null?null:t-baseline;marks.unshift({t,d});marks=marks.slice(0,20);$("history").innerHTML=marks.map((m,i)=>`<div class="sample"><span><b>Nokta ${marks.length-i}</b><br><small>${new Date().toLocaleTimeString("tr-TR")}</small></span><span>${fmt(m.t)} µT<br><small>${m.d===null?"Referans yok":"Δ "+fmt(m.d)+" µT"}</small></span></div>`).join("");};
+$("clear").onclick=()=>{samples=[];marks=[];baseline=null;$("history").innerHTML="<p>Henüz kayıt yok.</p>";$("delta").textContent="Referans alınmadı";$("bar").style.width="0%";draw()};
+window.addEventListener("resize",draw);draw();
+if("serviceWorker" in navigator && location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});
+</script></body></html>
